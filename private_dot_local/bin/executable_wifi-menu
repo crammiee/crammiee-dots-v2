@@ -43,7 +43,31 @@ if [ -z "${security_of[$ssid]:-}" ]; then
   exit 0
 fi
 
-pass=$(fuzzel --dmenu --password "${FUZZEL_OPTS[@]}" --prompt "Password for $ssid: " < /dev/null) || exit 0
+# Fuzzel has no live "reveal" toggle, but Alt+1 (bound to custom-1 by
+# default) resubmits the current input and exits with code 10 instead of 0.
+# We use that to relaunch the prompt with --password flipped, reseeding the
+# typed text via --search so nothing is lost when toggling.
+hidden=1
+pass=""
+while :; do
+  opts=(--dmenu "${FUZZEL_OPTS[@]}" --search "$pass")
+  if [ "$hidden" = 1 ]; then
+    opts+=(--password --prompt "Password for $ssid (Alt+1 to show): ")
+  else
+    opts+=(--prompt "Password for $ssid (Alt+1 to hide): ")
+  fi
+  if pass=$(fuzzel "${opts[@]}" < /dev/null); then
+    code=0
+  else
+    code=$?
+  fi
+  if [ "$code" = 10 ]; then
+    hidden=$((1 - hidden))
+    continue
+  fi
+  [ "$code" = 0 ] || exit 0
+  break
+done
 [ -z "$pass" ] && exit 0
 
 nmcli device wifi connect "$ssid" password "$pass" || err "Failed to connect to $ssid (wrong password?)"
