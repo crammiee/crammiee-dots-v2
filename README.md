@@ -20,11 +20,16 @@ runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 
 ```sh
 pacman -S chezmoi
-chezmoi init --apply <this-repo-url>
+chezmoi init --apply --source ~/dev/dotfiles <this-repo-url>
 ```
 
 `--apply` clones and applies in one step. On WSL the GUI configs are skipped
-with no extra flags or arguments needed.
+automatically — no extra flags needed for that.
+
+`--source` keeps the repo at `~/dev/dotfiles` instead of chezmoi's default
+(`~/.local/share/chezmoi`), so it's easy to `cd` into. It's recorded in
+`~/.config/chezmoi/chezmoi.toml` as `sourceDir`, which is *not* tracked by
+chezmoi itself (it's machine-local config).
 
 ## Daily use
 
