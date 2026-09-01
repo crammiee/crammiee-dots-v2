@@ -1,0 +1,49 @@
+#!/bin/bash
+# Fuzzel-based Wi-Fi picker: pick a nearby SSID, connect (prompting for a
+# password only if the network is actually secured), fall back to swaynag
+# for errors. Open networks skip the password prompt entirely and open a
+# browser afterwards, since open networks are almost always captive portals
+# (hotel/campus wifi) that need a login page to actually grant internet.
+set -euo pipefail
+
+err() { swaynag -t error -m "$1" & }
+
+FUZZEL_OPTS=(--no-exit-on-keyboard-focus-loss)
+
+declare -A security_of
+mapfile -t rows < <(nmcli -t -f SSID,SIGNAL,SECURITY,IN-USE dev wifi list | awk -F: '!seen[$1]++ && $1 != ""')
+
+menu=""
+for row in "${rows[@]}"; do
+  IFS=: read -r ssid signal security inuse <<< "$row"
+  security_of["$ssid"]="$security"
+  mark=""
+  [ "$inuse" = "*" ] && mark="  (connected)"
+  [ -z "$security" ] && mark="  (open)$mark"
+  menu+="${ssid}  ${signal}%${mark}"$'\n'
+done
+
+choice=$(printf '%s' "$menu" | fuzzel --dmenu "${FUZZEL_OPTS[@]}" --prompt "Wi-Fi > ") || exit 0
+[ -z "$choice" ] && exit 0
+
+ssid=$(sed -E 's/  [0-9]+%.*$//' <<< "$choice")
+
+# Already a saved connection profile: just bring it up.
+if nmcli -t -f NAME connection show | grep -qxF "$ssid"; then
+  nmcli connection up "$ssid" || err "Failed to connect to $ssid"
+  exit 0
+fi
+
+if [ -z "${security_of[$ssid]:-}" ]; then
+  # Open network, no password needed at all.
+  nmcli device wifi connect "$ssid" || { err "Failed to connect to $ssid"; exit 1; }
+  # Almost certainly a captive portal (hotel/campus wifi) - open a browser
+  # to a plain-HTTP page so the portal's redirect actually shows up.
+  firefox "http://neverssl.com" &
+  exit 0
+fi
+
+pass=$(fuzzel --dmenu --password "${FUZZEL_OPTS[@]}" --prompt "Password for $ssid: " < /dev/null) || exit 0
+[ -z "$pass" ] && exit 0
+
+nmcli device wifi connect "$ssid" password "$pass" || err "Failed to connect to $ssid (wrong password?)"

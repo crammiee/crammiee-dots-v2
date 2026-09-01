@@ -1,0 +1,29 @@
+# completion
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+# history
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS
+
+# nav
+setopt AUTO_CD
+
+# plugins (guarded so a machine missing them still gets a working shell)
+for plugin in \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh \
+  /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+do
+  [[ -f $plugin ]] && source $plugin
+done
+
+# tools
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+export PATH="$HOME/.local/bin:$PATH"

@@ -1,0 +1,9 @@
+#!/bin/bash
+# Show/hide the already-running Firefox instantly (quake-dropdown style).
+# Falls back to a real launch only if Firefox isn't running at all (e.g.
+# you closed every window, or the prewarm hasn't finished yet).
+if swaymsg -t get_tree | grep -q '"app_id": "firefox"'; then
+  swaymsg '[app_id="firefox"] scratchpad show'
+else
+  firefox &
+fi

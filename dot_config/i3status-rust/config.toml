@@ -1,0 +1,52 @@
+[theme]
+theme = "plain"
+
+[theme.overrides]
+idle_bg = "#3B4252"
+idle_fg = "#D8DEE9"
+info_bg = "#3B4252"
+info_fg = "#88C0D0"
+good_bg = "#3B4252"
+good_fg = "#A3BE8C"
+warning_bg = "#3B4252"
+warning_fg = "#EBCB8B"
+critical_bg = "#BF616A"
+critical_fg = "#2E3440"
+separator = " "
+separator_bg = "auto"
+separator_fg = "auto"
+
+[icons]
+icons = "none"
+
+[[block]]
+block = "net"
+device = "wlp3s0"
+format = " $icon {$ssid $signal_strength|down} "
+[[block.click]]
+button = "left"
+cmd = "~/.local/bin/wifi-menu"
+[[block.click]]
+button = "right"
+cmd = "nmcli device wifi rescan"
+
+[[block]]
+block = "sound"
+format = " $icon $volume "
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
+
+[[block]]
+block = "battery"
+format = " $icon $percentage {$time |}"
+missing_format = " no battery "
+
+[[block]]
+block = "memory"
+format = " $icon $mem_used_percents "
+
+[[block]]
+block = "time"
+interval = 60
+format = " $timestamp.datetime(f:'%a %d %b %H:%M') "

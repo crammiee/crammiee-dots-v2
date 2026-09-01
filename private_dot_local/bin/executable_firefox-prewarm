@@ -1,0 +1,13 @@
+#!/bin/bash
+# Launch Firefox once at session start and tuck it into the scratchpad as
+# soon as its window appears, so the slow cold-start happens silently in
+# the background instead of when you actually want to use it.
+firefox &
+
+for _ in $(seq 1 50); do
+  if swaymsg -t get_tree | grep -q '"app_id": "firefox"'; then
+    swaymsg '[app_id="firefox"] move to scratchpad'
+    break
+  fi
+  sleep 0.2
+done
