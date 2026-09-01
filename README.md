@@ -31,13 +31,64 @@ automatically — no extra flags needed for that.
 `~/.config/chezmoi/chezmoi.toml` as `sourceDir`, which is *not* tracked by
 chezmoi itself (it's machine-local config).
 
-## Daily use
+## Installing these on someone else's machine
+
+`chezmoi apply` **overwrites** existing dotfiles, so don't blind-apply a
+stranger's config. Preview first:
 
 ```sh
-chezmoi add <file>     # start tracking a file, or pull in local edits
-chezmoi diff           # preview what apply would change
-chezmoi apply          # write source state to $HOME
-chezmoi cd             # shell into the source repo to commit/push
+pacman -S chezmoi
+chezmoi init <this-repo-url>   # clone only, changes nothing yet
+chezmoi diff                   # see exactly what would be overwritten
+chezmoi apply                  # commit to it once you're happy
+```
+
+Take individual pieces instead of everything:
+
+```sh
+chezmoi apply ~/.config/sway   # just this one path
+```
+
+Things that are **not** carried over, because they aren't dotfiles:
+
+- TLP battery charge thresholds (`/etc/tlp.d/`, root-owned)
+- Enabled systemd user services (`pipewire`, `wireplumber`)
+- Installed packages (see below)
+
+## Changing something
+
+Two directions, depending on where you made the edit.
+
+**Edited the real file directly** (e.g. tweaked `~/.config/sway/config`) —
+pull the change back into the repo:
+
+```sh
+chezmoi add ~/.config/sway/config   # re-add = capture current contents
+chezmoi cd                          # into ~/dev/dotfiles
+git add -A && git commit -m "sway: ..." && git push
+exit
+```
+
+**Edited via chezmoi** — writes to the repo, then pushes out to `$HOME`:
+
+```sh
+chezmoi edit ~/.config/sway/config   # opens the source file in nvim
+chezmoi diff                         # preview
+chezmoi apply                        # write it out to $HOME
+```
+
+**On your other machine**, pull the changes down:
+
+```sh
+chezmoi update    # git pull + apply in one step
+```
+
+Useful checks:
+
+```sh
+chezmoi status    # empty output = $HOME matches the repo
+chezmoi managed   # list every file chezmoi controls
+chezmoi doctor    # sanity-check the setup
 ```
 
 ## Packages
