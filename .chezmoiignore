@@ -1,4 +1,5 @@
 README.md
+CLAUDE.md
 
 {{- /* GUI-only config: skipped on WSL, which has no display server.
        Logic is inverted because chezmoi manages everything by default,
