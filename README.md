@@ -55,6 +55,29 @@ Things that are **not** carried over, because they aren't dotfiles:
 - Enabled systemd user services (`pipewire`, `wireplumber`)
 - Installed packages (see below)
 
+## Settings GUI
+
+`$mod+Shift+S` opens a fuzzel menu that launches a focused tool per domain,
+rather than one monolithic settings app:
+
+| Entry | Tool |
+|-------|------|
+| Audio | `pavucontrol` |
+| Displays | `nwg-displays` |
+| Appearance | `nwg-look` |
+| Network | `nm-connection-editor` |
+| Wi-Fi | `~/.local/bin/wifi-menu` |
+
+**These GUIs write to chezmoi-managed files.** `nwg-look` writes
+`~/.config/gtk-3.0/settings.ini`; `nwg-displays` writes a sway output
+include. Treat them as *generators*: after changing something in a GUI,
+
+```sh
+chezmoi add ~/.config/gtk-3.0/settings.ini
+```
+
+and commit — otherwise the next `chezmoi apply` reverts it.
+
 ## Changing something
 
 Two directions, depending on where you made the edit.

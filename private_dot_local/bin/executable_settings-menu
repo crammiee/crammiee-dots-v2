@@ -1,0 +1,33 @@
+#!/bin/bash
+# Fuzzel-driven settings menu: pick a category, launch the tool that owns it.
+#
+# Note: some of these write to chezmoi-managed files (nwg-look ->
+# ~/.config/gtk-3.0/settings.ini, nwg-displays -> ~/.config/sway/outputs).
+# After changing settings there, run `chezmoi add <file>` and commit, or the
+# change will be reverted the next time `chezmoi apply` runs.
+set -euo pipefail
+
+err() { swaynag -t error -m "$1" & }
+
+declare -A actions=(
+  ["Audio  (volume, devices)"]="pavucontrol"
+  ["Displays  (resolution, arrangement)"]="nwg-displays"
+  ["Appearance  (GTK theme, fonts, cursor)"]="nwg-look"
+  ["Network  (connections, VPN)"]="nm-connection-editor"
+  ["Wi-Fi  (pick a network)"]="$HOME/.local/bin/wifi-menu"
+  ["Sway config  (edit in editor)"]="foot -e nvim $HOME/.config/sway/config"
+  ["Reload sway"]="swaymsg reload"
+)
+
+choice=$(printf '%s\n' "${!actions[@]}" | sort | fuzzel --dmenu --no-exit-on-keyboard-focus-loss --prompt "Settings > ") || exit 0
+[ -z "$choice" ] && exit 0
+
+cmd="${actions[$choice]}"
+bin="${cmd%% *}"
+
+if ! command -v "$bin" > /dev/null 2>&1; then
+  err "Not installed: $bin"
+  exit 1
+fi
+
+exec $cmd

@@ -79,6 +79,9 @@ exec autotiling
     # Instant browser: toggles an already-running, pre-warmed Firefox
     bindsym $mod+Shift+w exec ~/.local/bin/firefox-toggle
 
+    # Settings menu
+    bindsym $mod+Shift+s exec ~/.local/bin/settings-menu
+
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
