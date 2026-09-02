@@ -31,3 +31,14 @@ done
 alias ls='ls --color=auto'
 alias ll='ls -lah'
 export PATH="$HOME/.local/bin:$PATH"
+
+# swayidle suspends on wall-clock idle regardless of whether claude is mid-task
+# (see ~/dev/dotfiles/dot_config/sway/config); hold a sleep inhibitor for the
+# duration of the run so a long task doesn't get suspended out from under it.
+# The screen still locks/blanks on schedule -- only suspend is blocked.
+if (( $+commands[systemd-inhibit] )) && [[ -z $WSL_DISTRO_NAME ]]; then
+  claude() {
+    systemd-inhibit --what=sleep --why="Claude Code task running" -- \
+      "$HOME/.local/bin/claude" "$@"
+  }
+fi
