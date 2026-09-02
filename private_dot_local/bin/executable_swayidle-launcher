@@ -1,0 +1,29 @@
+#!/bin/bash
+# Launches swayidle with a suspend timeout read from
+# ~/.config/sway/idle-suspend-timeout (seconds, or "never" to disable
+# suspend-on-idle entirely). Defaults to 900 (15 min) when the file is
+# absent. Lock (180s) and screen-off (210s) stay fixed -- see idle-timeout-menu
+# ($mod+Shift+s > "Idle / suspend timeout") for changing this at runtime.
+#
+# The state file is intentionally not chezmoi-tracked: it's a live
+# preference, not source config (see CLAUDE.md).
+set -euo pipefail
+
+state_file="$HOME/.config/sway/idle-suspend-timeout"
+timeout=900
+if [ -f "$state_file" ]; then
+  timeout=$(<"$state_file")
+fi
+
+args=(-w
+  timeout 180 'swaylock -f -c 2E3440'
+  timeout 210 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
+)
+
+if [ "$timeout" != "never" ]; then
+  args+=(timeout "$timeout" 'systemctl suspend')
+fi
+
+args+=(before-sleep 'swaylock -f -c 2E3440')
+
+exec swayidle "${args[@]}"

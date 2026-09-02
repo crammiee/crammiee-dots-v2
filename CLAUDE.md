@@ -22,7 +22,8 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 - Shared (all machines): `.zshrc`, `.config/nvim/`
 - GUI only (skipped on WSL): `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0}`,
   `.config/mimeapps.list`,
-  `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch}`
+  `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,
+  swayidle-launcher,idle-timeout-menu}`
 
 `.chezmoiignore` skips the GUI configs on WSL by detecting `microsoft` in
 `.chezmoi.kernel.osrelease`. Anything GUI-related must stay inside that block.
@@ -37,6 +38,11 @@ units) is outside chezmoi entirely.
 unit file itself is local, unmanaged state (`systemctl --user enable --now
 claude-inhibit.service` recreates it on a new machine), while the logic it
 runs lives in the tracked `claude-inhibit-watch` script above.
+
+Likewise `~/.config/sway/idle-suspend-timeout` (written by `idle-timeout-menu`,
+read by `swayidle-launcher`) is a live preference, not source config -- it
+lives inside the chezmoi-managed `.config/sway/` tree but isn't itself
+tracked, and chezmoi leaves untracked files in a managed directory alone.
 
 ## Machine
 

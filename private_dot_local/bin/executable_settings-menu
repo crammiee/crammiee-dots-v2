@@ -17,6 +17,7 @@ declare -A actions=(
   ["Wi-Fi  (pick a network)"]="$HOME/.local/bin/wifi-menu"
   ["Sway config  (edit in editor)"]="foot -e nvim $HOME/.config/sway/config"
   ["Reload sway"]="swaymsg reload"
+  ["Idle / suspend timeout"]="$HOME/.local/bin/idle-timeout-menu"
 )
 
 choice=$(printf '%s\n' "${!actions[@]}" | sort | fuzzel --dmenu --no-exit-on-keyboard-focus-loss --prompt "Settings > ") || exit 0

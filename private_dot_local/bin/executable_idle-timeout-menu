@@ -1,0 +1,23 @@
+#!/bin/bash
+# Fuzzel picker to change the swayidle suspend timeout at runtime, without a
+# sway reload. Writes the choice to ~/.config/sway/idle-suspend-timeout
+# (persists across reboots -- see swayidle-launcher) and restarts swayidle
+# to pick it up.
+set -euo pipefail
+
+state_file="$HOME/.config/sway/idle-suspend-timeout"
+
+order=("Short (5 min)" "Default (15 min)" "Long (60 min)" "Never")
+declare -A presets=(
+  ["Short (5 min)"]=300
+  ["Default (15 min)"]=900
+  ["Long (60 min)"]=3600
+  ["Never"]="never"
+)
+
+choice=$(printf '%s\n' "${order[@]}" | fuzzel --dmenu --no-exit-on-keyboard-focus-loss --prompt "Suspend timeout > ") || exit 0
+[ -z "$choice" ] && exit 0
+
+echo "${presets[$choice]}" > "$state_file"
+pkill -x swayidle || true
+swaymsg exec "$HOME/.local/bin/swayidle-launcher"

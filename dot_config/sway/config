@@ -37,11 +37,10 @@ output * bg #2E3440 solid_color
 #
 # Tuned for battery savings on an aging battery: lock quickly, kill the
 # backlight (the biggest power draw) shortly after, suspend if left idle.
-exec swayidle -w \
-         timeout 180 'swaylock -f -c 2E3440' \
-         timeout 210 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         timeout 900 'systemctl suspend' \
-         before-sleep 'swaylock -f -c 2E3440'
+# The suspend timeout (default 15 min) is configurable at runtime via
+# $mod+Shift+s > "Idle / suspend timeout" -- see swayidle-launcher and
+# idle-timeout-menu in ~/.local/bin.
+exec ~/.local/bin/swayidle-launcher
 
 # Manual lock
 bindsym $mod+Shift+x exec swaylock -f -c 2E3440
