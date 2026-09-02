@@ -1,0 +1,30 @@
+#!/bin/bash
+# Holds a systemd sleep inhibitor for as long as any `claude` process is
+# running, regardless of how it was launched (new terminal, tmux, editor,
+# etc.) -- swayidle's idle-based suspend and lid-close both suspend via
+# logind, which respects a held "sleep" inhibitor (lid-close only does so
+# because of LidSwitchIgnoreInhibited=no in /etc/systemd/logind.conf.d/).
+# Run as a systemd --user service; see dot_config/systemd/user/ note in
+# CLAUDE.md for why the unit itself isn't chezmoi-tracked.
+set -euo pipefail
+
+inhibit_pid=""
+
+cleanup() {
+  [ -n "$inhibit_pid" ] && kill "$inhibit_pid" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+while true; do
+  if pgrep -x claude >/dev/null; then
+    if [ -z "$inhibit_pid" ] || ! kill -0 "$inhibit_pid" 2>/dev/null; then
+      systemd-inhibit --what=sleep --why="claude is running" sleep infinity &
+      inhibit_pid=$!
+    fi
+  elif [ -n "$inhibit_pid" ]; then
+    kill "$inhibit_pid" 2>/dev/null || true
+    wait "$inhibit_pid" 2>/dev/null || true
+    inhibit_pid=""
+  fi
+  sleep 30
+done

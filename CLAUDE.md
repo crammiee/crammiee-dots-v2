@@ -21,7 +21,8 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 
 - Shared (all machines): `.zshrc`, `.config/nvim/`
 - GUI only (skipped on WSL): `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0}`,
-  `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu}`
+  `.config/mimeapps.list`,
+  `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch}`
 
 `.chezmoiignore` skips the GUI configs on WSL by detecting `microsoft` in
 `.chezmoi.kernel.osrelease`. Anything GUI-related must stay inside that block.
@@ -31,6 +32,11 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 `.config/gh` (auth tokens), caches, and runtime state (`pulse`, `systemd`,
 `procps`, `mozilla`). System-level config (`/etc/tlp.d/`, enabled systemd
 units) is outside chezmoi entirely.
+
+`~/.config/systemd/user/claude-inhibit.service` follows the same rule: the
+unit file itself is local, unmanaged state (`systemctl --user enable --now
+claude-inhibit.service` recreates it on a new machine), while the logic it
+runs lives in the tracked `claude-inhibit-watch` script above.
 
 ## Machine
 
