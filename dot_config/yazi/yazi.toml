@@ -4,5 +4,5 @@ run  = "ouch"
 
 [opener]
 extract = [
-	{ run = 'ouch d -y "$@"', desc = "Extract here with ouch", for = "unix" },
+	{ run = 'ouch d -y %s', desc = "Extract here with ouch", for = "unix" },
 ]
