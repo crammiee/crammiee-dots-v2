@@ -19,17 +19,38 @@ runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 ## New machine
 
 ```sh
-pacman -S chezmoi
-chezmoi init --apply --source ~/dev/dotfiles <this-repo-url>
+# 1. Packages (shared — needed on every machine)
+sudo pacman -S chezmoi zsh zsh-autosuggestions zsh-syntax-highlighting \
+  zoxide starship neovim git tmux
+
+# 1b. GUI machines only — skip on WSL
+sudo pacman -S sway swaybg swayidle swaylock foot fuzzel \
+  i3status-rust brightnessctl playerctl pipewire pipewire-pulse \
+  pipewire-alsa wireplumber networkmanager tlp autotiling
+
+# 2. Clone + apply the dotfiles
+chezmoi init --apply --source ~/dev/dotfiles https://github.com/crammiee/crammiee-dots-v2
+
+# 3. Tell chezmoi where the repo lives (init does NOT save this)
+mkdir -p ~/.config/chezmoi
+echo 'sourceDir = "~/dev/dotfiles"' > ~/.config/chezmoi/chezmoi.toml
+
+# 4. Sanity check — empty output means $HOME matches the repo
+chezmoi status
 ```
 
 `--apply` clones and applies in one step. On WSL the GUI configs are skipped
 automatically — no extra flags needed for that.
 
 `--source` keeps the repo at `~/dev/dotfiles` instead of chezmoi's default
-(`~/.local/share/chezmoi`), so it's easy to `cd` into. It's recorded in
-`~/.config/chezmoi/chezmoi.toml` as `sourceDir`, which is *not* tracked by
-chezmoi itself (it's machine-local config).
+(`~/.local/share/chezmoi`), so it's easy to `cd` into. But the flag only
+applies to that one command — it is **not** persisted. Without step 3, every
+later `chezmoi` command fails with
+`stat ~/.local/share/chezmoi: no such file or directory`. The
+`chezmoi.toml` is machine-local config and is *not* tracked by chezmoi itself.
+
+After install, if zsh isn't already your login shell: `chsh -s /bin/zsh`.
+Neovim (LazyVim) installs its plugins on first launch.
 
 ## Installing these on someone else's machine
 
@@ -116,10 +137,11 @@ chezmoi doctor    # sanity-check the setup
 
 ## Packages
 
-Not installed by chezmoi. Roughly:
+Not installed by chezmoi — see the `pacman` commands under **New machine**.
+(`swaynag` ships with `sway`.)
 
-- Shared: `zsh zsh-autosuggestions zsh-syntax-highlighting zoxide starship neovim git`
-- GUI only: `sway swaybg swayidle swaylock swaynag foot fuzzel i3status-rust brightnessctl playerctl pipewire pipewire-pulse pipewire-alsa wireplumber networkmanager tlp autotiling`
+- Shared: `zsh zsh-autosuggestions zsh-syntax-highlighting zoxide starship neovim git tmux`
+- GUI only: `sway swaybg swayidle swaylock foot fuzzel i3status-rust brightnessctl playerctl pipewire pipewire-pulse pipewire-alsa wireplumber networkmanager tlp autotiling`
 
 The `.zshrc` guards its plugin sourcing, so a machine missing any of the
 shared packages still gets a working shell.
