@@ -48,6 +48,9 @@ bindsym $mod+Shift+x exec swaylock -f -c 2E3440
 # Auto-alternate split direction (event-driven, negligible overhead)
 exec autotiling
 
+# grim's Print bindings save here; tee fails if the dir is missing
+exec mkdir -p ~/Pictures/Screenshots
+
 ### Input configuration
 #
 # Example configuration:
