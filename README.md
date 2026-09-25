@@ -21,7 +21,7 @@ runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 ```sh
 # 1. Packages (shared — needed on every machine)
 sudo pacman -S chezmoi zsh zsh-autosuggestions zsh-syntax-highlighting \
-  zoxide starship neovim git tmux
+  zoxide starship neovim git tmux nodejs npm unzip wl-clipboard
 
 # 1b. GUI machines only — skip on WSL
 sudo pacman -S sway swaybg swayidle swaylock foot fuzzel \
@@ -140,8 +140,15 @@ chezmoi doctor    # sanity-check the setup
 Not installed by chezmoi — see the `pacman` commands under **New machine**.
 (`swaynag` ships with `sway`.)
 
-- Shared: `zsh zsh-autosuggestions zsh-syntax-highlighting zoxide starship neovim git tmux`
+- Shared: `zsh zsh-autosuggestions zsh-syntax-highlighting zoxide starship neovim git tmux nodejs npm unzip wl-clipboard`
 - GUI only: `sway swaybg swayidle swaylock foot fuzzel i3status-rust brightnessctl playerctl pipewire pipewire-pulse pipewire-alsa wireplumber networkmanager tlp autotiling`
 
 The `.zshrc` guards its plugin sourcing, so a machine missing any of the
 shared packages still gets a working shell.
+
+Neovim's Mason installs LSPs/linters with `npm` and `unzip`, and the clipboard
+needs `wl-clipboard` (WSLg speaks Wayland too). On WSL these matter extra:
+without a Linux `node`/`npm`, Mason silently picks up the **Windows** `npm`
+from the appended Windows `PATH`, and the resulting tools fail with `EACCES`.
+If that already happened, install the packages, then
+`rm -rf ~/.local/share/nvim/mason/{packages,bin}` and let Mason reinstall.

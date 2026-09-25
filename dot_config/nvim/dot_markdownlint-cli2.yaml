@@ -1,0 +1,4 @@
+# Global markdownlint config, passed to nvim-lint via --config (lua/plugins/markdownlint.lua)
+config:
+  MD013: false # line length -- prose paragraphs are soft-wrapped
+  MD041: false # first-line heading -- command/skill files open with frontmatter + prose
