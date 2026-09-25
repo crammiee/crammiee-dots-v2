@@ -12,6 +12,7 @@ CLAUDE.md
 .config/i3status-rust
 .config/gtk-3.0
 .config/gtk-4.0
+.config/nwg-look
 .config/mimeapps.list
 .local/bin/wifi-menu
 .local/bin/firefox-toggle

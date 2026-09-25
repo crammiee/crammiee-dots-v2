@@ -17,6 +17,9 @@ packages:
     - npm           #   WSL it falls back to the Windows npm and the tools break
     - unzip         # Mason extracts release archives
     - wl-clipboard  # nvim clipboard (WSLg speaks Wayland too)
+    - yazi
+    - ouch          # yazi archive preview/extract/compress
+    - python-pymupdf  # pdf2md (pymupdf4llm itself is AUR, see README)
   # Machines with a display only -- skipped on WSL
   gui:
     - sway
@@ -35,3 +38,6 @@ packages:
     - networkmanager
     - tlp
     - autotiling
+    - grim          # Print / Shift+Print screenshots
+    - slurp
+    - nwg-look
