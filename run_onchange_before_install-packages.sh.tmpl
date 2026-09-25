@@ -1,10 +1,11 @@
 {{- $wsl := and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
 {{- $pkgs := .packages.shared -}}
-{{- if not $wsl }}{{ $pkgs = concat $pkgs .packages.gui }}{{ end -}}
+{{- $aur := .packages.aur.shared -}}
+{{- if not $wsl }}{{ $pkgs = concat $pkgs .packages.gui }}{{ $aur = concat $aur .packages.aur.gui }}{{ end -}}
 #!/bin/bash
 # Installs the packages in .chezmoidata/packages.yaml. chezmoi re-runs this
 # only when its rendered contents change, i.e. when a package list changes.
-# WSL gets only the shared list (same check as .chezmoiignore).
+# WSL gets only the shared lists (same check as .chezmoiignore).
 set -euo pipefail
 
 if ! command -v pacman >/dev/null; then
@@ -19,3 +20,25 @@ pkgs=(
 )
 
 sudo pacman -S --needed --noconfirm "${pkgs[@]}"
+
+aur=(
+{{- range $aur }}
+  {{ . }}
+{{- end }}
+)
+
+[ ${#aur[@]} -eq 0 ] && exit 0
+
+# AUR helpers refuse to run as root and makepkg needs base-devel.
+helper=$(command -v yay || command -v paru || true)
+if [ -z "$helper" ]; then
+  echo "install-packages: no AUR helper, bootstrapping yay-bin" >&2
+  sudo pacman -S --needed --noconfirm base-devel git
+  tmp=$(mktemp -d)
+  trap 'rm -rf "$tmp"' EXIT
+  git clone --depth 1 https://aur.archlinux.org/yay-bin.git "$tmp/yay-bin"
+  (cd "$tmp/yay-bin" && makepkg -si --noconfirm)
+  helper=yay
+fi
+
+"$helper" -S --needed --noconfirm "${aur[@]}"

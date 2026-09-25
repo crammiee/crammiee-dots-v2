@@ -32,9 +32,10 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 ## Packages
 
 `.chezmoidata/packages.yaml` lists the pacman packages (`shared`, and `gui`
-which is skipped on WSL). `run_onchange_before_install-packages.sh.tmpl`
-installs them on `chezmoi apply` and re-runs whenever a list changes. When a
-config starts depending on a new tool, add the package there, not to the README.
+which is skipped on WSL), plus AUR ones under `aur.{shared,gui}`.
+`run_onchange_before_install-packages.sh.tmpl` installs them on `chezmoi apply`
+and re-runs whenever a list changes. When a config starts depending on a new
+tool, add the package there, not to the README.
 
 ## Not managed on purpose
 

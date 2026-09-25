@@ -70,8 +70,6 @@ Things that are **not** carried over, because they aren't dotfiles:
 
 - TLP battery charge thresholds (`/etc/tlp.d/`, root-owned)
 - Enabled systemd user services (`pipewire`, `wireplumber`)
-- AUR packages (the install script only uses `pacman`; see **Packages**),
-  e.g. `python-pymupdf4llm` for `pdf2md`
 
 ## Settings GUI
 
@@ -138,9 +136,13 @@ Listed in `.chezmoidata/packages.yaml`: `shared` goes on every machine,
 `gui` only on machines with a display (skipped on WSL, same check as
 `.chezmoiignore`). `swaynag` ships with `sway`.
 
+AUR packages go under `aur.shared` / `aur.gui` and are installed with `yay`
+(or `paru`). If neither is installed, the script bootstraps `yay-bin` first
+(pulls in `base-devel`).
+
 To add one, append it to the right list and run `chezmoi apply`. The install
 script is a `run_onchange_` script, so chezmoi re-runs it only when its
-rendered contents change — i.e. when a list changes. `pacman --needed` skips
+rendered contents change — i.e. when a list changes. `--needed` skips
 whatever is already installed. Removing a package from the list does **not**
 uninstall it; do that with `pacman -Rns` yourself.
 

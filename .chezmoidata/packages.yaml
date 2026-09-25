@@ -1,5 +1,5 @@
 # Package lists installed by run_onchange_before_install-packages.sh.tmpl.
-# Edit here, then `chezmoi apply` installs anything new (pacman --needed skips the rest).
+# Edit here, then `chezmoi apply` installs anything new (--needed skips the rest).
 packages:
   # Every machine, including WSL
   shared:
@@ -19,7 +19,7 @@ packages:
     - wl-clipboard  # nvim clipboard (WSLg speaks Wayland too)
     - yazi
     - ouch          # yazi archive preview/extract/compress
-    - python-pymupdf  # pdf2md (pymupdf4llm itself is AUR, see README)
+    - python-pymupdf  # pdf2md (pymupdf4llm itself is in aur.shared below)
   # Machines with a display only -- skipped on WSL
   gui:
     - sway
@@ -41,3 +41,9 @@ packages:
     - grim          # Print / Shift+Print screenshots
     - slurp
     - nwg-look
+  # AUR, installed with yay (bootstrapped from yay-bin if no helper exists).
+  # Same shared/gui split as above.
+  aur:
+    shared:
+      - python-pymupdf4llm  # pdf2md
+    gui: []
