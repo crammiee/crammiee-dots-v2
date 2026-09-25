@@ -16,6 +16,17 @@ setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS
 # nav
 setopt AUTO_CD
 
+# keys: word-jump with Alt/Ctrl+arrows, plus Home/End/Delete
+# (unbound by default -- zsh otherwise inserts the tail, e.g. ";3D")
+bindkey -e
+bindkey '^[[1;3D' backward-word   # Alt+Left
+bindkey '^[[1;3C' forward-word    # Alt+Right
+bindkey '^[[1;5D' backward-word   # Ctrl+Left
+bindkey '^[[1;5C' forward-word    # Ctrl+Right
+bindkey '^[[H'    beginning-of-line  # Home
+bindkey '^[[F'    end-of-line        # End
+bindkey '^[[3~'   delete-char        # Delete
+
 # plugins (guarded so a machine missing them still gets a working shell)
 for plugin in \
   /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh \
