@@ -10,8 +10,8 @@ detects WSL via `.chezmoi.kernel.osrelease` containing `microsoft`.
 
 | Scope | Files |
 |-------|-------|
-| Shared | `.zshrc`, `.config/nvim/` |
-| GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm}` |
+| Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/pdf2md`, `.claude/CLAUDE.md` |
+| GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm}` |
 
 Deliberately **not** tracked: `.config/gh` (auth tokens), plus caches and
 runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
@@ -70,7 +70,8 @@ Things that are **not** carried over, because they aren't dotfiles:
 
 - TLP battery charge thresholds (`/etc/tlp.d/`, root-owned)
 - Enabled systemd user services (`pipewire`, `wireplumber`)
-- AUR packages (the install script only uses `pacman`; see **Packages**)
+- AUR packages (the install script only uses `pacman`; see **Packages**),
+  e.g. `python-pymupdf4llm` for `pdf2md`
 
 ## Settings GUI
 
