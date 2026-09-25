@@ -19,14 +19,8 @@ runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 ## New machine
 
 ```sh
-# 1. Packages (shared — needed on every machine)
-sudo pacman -S chezmoi zsh zsh-autosuggestions zsh-syntax-highlighting \
-  zoxide starship neovim git tmux nodejs npm unzip wl-clipboard
-
-# 1b. GUI machines only — skip on WSL
-sudo pacman -S sway swaybg swayidle swaylock foot fuzzel \
-  i3status-rust brightnessctl playerctl pipewire pipewire-pulse \
-  pipewire-alsa wireplumber networkmanager tlp autotiling
+# 1. Bootstrap: just enough to clone. `chezmoi apply` installs the rest.
+sudo pacman -S --needed chezmoi git
 
 # 2. Clone + apply the dotfiles
 chezmoi init --apply --source ~/dev/dotfiles https://github.com/crammiee/crammiee-dots-v2
@@ -39,8 +33,10 @@ echo 'sourceDir = "~/dev/dotfiles"' > ~/.config/chezmoi/chezmoi.toml
 chezmoi status
 ```
 
-`--apply` clones and applies in one step. On WSL the GUI configs are skipped
-automatically — no extra flags needed for that.
+`--apply` clones and applies in one step. Before writing any files, it runs
+`run_onchange_before_install-packages.sh.tmpl`, which installs everything in
+`.chezmoidata/packages.yaml` (asks for your `sudo` password). On WSL the GUI
+packages and configs are both skipped automatically — no extra flags needed.
 
 `--source` keeps the repo at `~/dev/dotfiles` instead of chezmoi's default
 (`~/.local/share/chezmoi`), so it's easy to `cd` into. But the flag only
@@ -74,7 +70,7 @@ Things that are **not** carried over, because they aren't dotfiles:
 
 - TLP battery charge thresholds (`/etc/tlp.d/`, root-owned)
 - Enabled systemd user services (`pipewire`, `wireplumber`)
-- Installed packages (see below)
+- AUR packages (the install script only uses `pacman`; see **Packages**)
 
 ## Settings GUI
 
@@ -137,11 +133,15 @@ chezmoi doctor    # sanity-check the setup
 
 ## Packages
 
-Not installed by chezmoi — see the `pacman` commands under **New machine**.
-(`swaynag` ships with `sway`.)
+Listed in `.chezmoidata/packages.yaml`: `shared` goes on every machine,
+`gui` only on machines with a display (skipped on WSL, same check as
+`.chezmoiignore`). `swaynag` ships with `sway`.
 
-- Shared: `zsh zsh-autosuggestions zsh-syntax-highlighting zoxide starship neovim git tmux nodejs npm unzip wl-clipboard`
-- GUI only: `sway swaybg swayidle swaylock foot fuzzel i3status-rust brightnessctl playerctl pipewire pipewire-pulse pipewire-alsa wireplumber networkmanager tlp autotiling`
+To add one, append it to the right list and run `chezmoi apply`. The install
+script is a `run_onchange_` script, so chezmoi re-runs it only when its
+rendered contents change — i.e. when a list changes. `pacman --needed` skips
+whatever is already installed. Removing a package from the list does **not**
+uninstall it; do that with `pacman -Rns` yourself.
 
 The `.zshrc` guards its plugin sourcing, so a machine missing any of the
 shared packages still gets a working shell.
@@ -151,4 +151,4 @@ needs `wl-clipboard` (WSLg speaks Wayland too). On WSL these matter extra:
 without a Linux `node`/`npm`, Mason silently picks up the **Windows** `npm`
 from the appended Windows `PATH`, and the resulting tools fail with `EACCES`.
 If that already happened, install the packages, then
-`rm -rf ~/.local/share/nvim/mason/{packages,bin}` and let Mason reinstall.
+`rm -rf ~/.local/share/nvim/mason/{packages,bin,share,opt}` and let Mason reinstall.

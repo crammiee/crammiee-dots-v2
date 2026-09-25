@@ -28,6 +28,13 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 `.chezmoiignore` skips the GUI configs on WSL by detecting `microsoft` in
 `.chezmoi.kernel.osrelease`. Anything GUI-related must stay inside that block.
 
+## Packages
+
+`.chezmoidata/packages.yaml` lists the pacman packages (`shared`, and `gui`
+which is skipped on WSL). `run_onchange_before_install-packages.sh.tmpl`
+installs them on `chezmoi apply` and re-runs whenever a list changes. When a
+config starts depending on a new tool, add the package there, not to the README.
+
 ## Not managed on purpose
 
 `.config/gh` (auth tokens), caches, and runtime state (`pulse`, `systemd`,

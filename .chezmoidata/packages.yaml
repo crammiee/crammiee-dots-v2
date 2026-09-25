@@ -1,0 +1,37 @@
+# Package lists installed by run_onchange_before_install-packages.sh.tmpl.
+# Edit here, then `chezmoi apply` installs anything new (pacman --needed skips the rest).
+packages:
+  # Every machine, including WSL
+  shared:
+    - chezmoi
+    - zsh
+    - zsh-autosuggestions
+    - zsh-syntax-highlighting
+    - zoxide
+    - starship
+    - neovim
+    - git
+    - tmux
+    - lazygit       # <leader>gg in LazyVim
+    - nodejs        # Mason installs npm-based LSPs/linters -- without these, on
+    - npm           #   WSL it falls back to the Windows npm and the tools break
+    - unzip         # Mason extracts release archives
+    - wl-clipboard  # nvim clipboard (WSLg speaks Wayland too)
+  # Machines with a display only -- skipped on WSL
+  gui:
+    - sway
+    - swaybg
+    - swayidle
+    - swaylock
+    - foot
+    - fuzzel
+    - i3status-rust
+    - brightnessctl
+    - playerctl
+    - pipewire
+    - pipewire-pulse
+    - pipewire-alsa
+    - wireplumber
+    - networkmanager
+    - tlp
+    - autotiling
