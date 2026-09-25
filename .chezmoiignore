@@ -17,4 +17,8 @@ CLAUDE.md
 .local/bin/wifi-menu
 .local/bin/firefox-toggle
 .local/bin/firefox-prewarm
+.local/bin/settings-menu
+.local/bin/claude-inhibit-watch
+.local/bin/swayidle-launcher
+.local/bin/idle-timeout-menu
 {{- end }}
