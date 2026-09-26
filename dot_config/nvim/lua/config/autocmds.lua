@@ -52,3 +52,6 @@ if vim.fn.executable("chezmoi") == 1 then
     callback = function() re_add():wait(3000) end,
   })
 end
+
+-- Dim comments except the one under the cursor (see config/comment_focus.lua).
+require("config.comment_focus").setup()
