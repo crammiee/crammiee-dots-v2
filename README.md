@@ -148,6 +148,28 @@ later `chezmoi` command fails with
 After install, if zsh isn't already your login shell: `chsh -s /bin/zsh`.
 Neovim (LazyVim) installs its plugins on first launch.
 
+### Switching the remote to SSH
+
+`chezmoi init` clones over https because a fresh machine has no SSH key yet
+(the repo is public, so no login is needed to clone). Pushing over https would
+ask for a token, so once the machine has a key, switch the remote:
+
+```sh
+# 1. Make a key (skip if you restored ~/.ssh from another machine)
+ssh-keygen -t ed25519 -C "<you>@<machine>"
+cat ~/.ssh/id_ed25519.pub   # add at github.com -> Settings -> SSH and GPG keys
+
+# 2. Check GitHub accepts it -- should greet you by username
+ssh -T git@github.com
+
+# 3. Point the dotfiles repo at SSH
+git -C ~/dev/dotfiles remote set-url origin git@github.com:crammiee/crammiee-dots-v2.git
+git -C ~/dev/dotfiles remote -v
+```
+
+`chezmoi update` just runs git in `~/dev/dotfiles`, so it uses SSH from then on
+too.
+
 ## Installing these on someone else's machine
 
 `chezmoi apply` **overwrites** existing dotfiles, so don't blind-apply a
