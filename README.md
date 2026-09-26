@@ -156,7 +156,7 @@ ask for a token, so once the machine has a key, switch the remote:
 
 ```sh
 # 1. Make a key (skip if you restored ~/.ssh from another machine)
-ssh-keygen -t ed25519 -C "<you>@<machine>"
+ssh-keygen -t ed25519
 cat ~/.ssh/id_ed25519.pub   # add at github.com -> Settings -> SSH and GPG keys
 
 # 2. Check GitHub accepts it -- should greet you by username
