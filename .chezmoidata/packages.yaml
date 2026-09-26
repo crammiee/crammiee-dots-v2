@@ -3,6 +3,17 @@
 packages:
   # Every machine, including WSL
   shared:
+    # Base essentials a minimal pacstrap/archinstall leaves out
+    - base-devel    # makepkg, needed for AUR builds
+    - sudo
+    - man-db
+    - man-pages
+    - less
+    - curl
+    - openssh
+    - ripgrep       # LazyVim grep
+    - fd            # LazyVim file finder
+    # Shell, editor, tools
     - chezmoi
     - zsh
     - zsh-autosuggestions
@@ -22,6 +33,12 @@ packages:
     - python-pymupdf  # pdf2md (pymupdf4llm itself is in aur.shared below)
   # Machines with a display only -- skipped on WSL
   gui:
+    # Desktop plumbing
+    - adwaita-icon-theme
+    - polkit
+    - xdg-utils
+    - xdg-desktop-portal-wlr  # screen sharing in firefox
+    # Sway desktop
     - sway
     - swaybg
     - swayidle
@@ -43,6 +60,8 @@ packages:
     - nwg-look
     - firefox       # firefox-toggle, firefox-prewarm, wifi-menu captive portals
     - pavucontrol   # settings-menu audio entry
+    - nwg-displays  # settings-menu displays entry
+    - network-manager-applet  # settings-menu network entry (nm-connection-editor)
   # AUR, installed with yay (bootstrapped from yay-bin if no helper exists).
   # Same shared/gui split as above.
   aur:

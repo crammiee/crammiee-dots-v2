@@ -16,6 +16,63 @@ detects WSL via `.chezmoi.kernel.osrelease` containing `microsoft`.
 Deliberately **not** tracked: `.config/gh` (auth tokens), plus caches and
 runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 
+## Fresh Arch install
+
+Starting point: a minimal Arch install, rebooted and logged in as root on the
+TTY. Include NetworkManager at install time, or the new system has no Wi-Fi:
+`pacstrap /mnt base linux linux-firmware networkmanager`, or in `archinstall`
+pick the **Minimal** profile and **NetworkManager** under Network
+configuration. Everything past what's below comes from
+`.chezmoidata/packages.yaml`, including `base-devel` and the
+whole desktop.
+
+```sh
+# 1. Network
+systemctl enable --now NetworkManager
+nmcli device wifi connect "<SSID>" --ask    # or: nmtui
+
+# 2. Update, and get sudo for the user
+pacman -Syu --needed sudo zsh
+useradd -m -G wheel -s /bin/zsh <user>
+passwd <user>
+echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel   # base has no editor for visudo
+chmod 440 /etc/sudoers.d/wheel
+
+# 3. Log out, log back in as <user>, then continue with "New machine" below.
+```
+
+After the **New machine** steps finish:
+
+```sh
+# 4. Battery tuning (pipewire's user units are socket-activated, nothing to enable)
+sudo systemctl enable --now tlp
+
+# 5. Optional: keep the laptop awake while `claude` runs. The unit file is
+#    deliberately untracked (see CLAUDE.md), so create it by hand:
+mkdir -p ~/.config/systemd/user
+cat > ~/.config/systemd/user/claude-inhibit.service <<'EOF'
+[Unit]
+Description=Hold a sleep inhibitor while any claude process is running
+
+[Service]
+ExecStart=%h/.local/bin/claude-inhibit-watch
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+EOF
+systemctl --user enable --now claude-inhibit.service
+
+# 6. Things not in the repo
+mkdir -p ~/Pictures/wallpapers    # copy spiderman.jpg here, or sway shows no wallpaper
+
+# 7. Reboot. Logging in on tty1 starts sway (.zprofile).
+sudo reboot
+```
+
+Wi-Fi after that: `$mod+Shift+S` → **Wi-Fi**, or `nmtui`.
+
 ## New machine
 
 ```sh
