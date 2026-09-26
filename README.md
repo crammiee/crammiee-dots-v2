@@ -134,7 +134,7 @@ chezmoi doctor    # sanity-check the setup
 
 Listed in `.chezmoidata/packages.yaml`: `shared` goes on every machine,
 `gui` only on machines with a display (skipped on WSL, same check as
-`.chezmoiignore`). `swaynag` ships with `sway`.
+`.chezmoiignore`, both via `.chezmoitemplates/is-wsl`). `swaynag` ships with `sway`.
 
 AUR packages go under `aur.shared` / `aur.gui` and are installed with `yay`
 (or `paru`). If neither is installed, the script bootstraps `yay-bin` first

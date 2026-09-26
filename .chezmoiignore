@@ -4,7 +4,7 @@ CLAUDE.md
 {{- /* GUI-only config: skipped on WSL, which has no display server.
        Logic is inverted because chezmoi manages everything by default,
        so we ignore these *unless* we're on a machine with a display. */}}
-{{- if and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+{{- if includeTemplate "is-wsl" . }}
 .zprofile
 .config/sway
 .config/foot

@@ -1,0 +1,3 @@
+{{- /* "true" on WSL, empty otherwise. Single source for the WSL check used by
+       .chezmoiignore and the package install script. */ -}}
+{{- if and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}true{{ end -}}

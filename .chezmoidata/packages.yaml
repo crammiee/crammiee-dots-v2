@@ -41,6 +41,8 @@ packages:
     - grim          # Print / Shift+Print screenshots
     - slurp
     - nwg-look
+    - firefox       # firefox-toggle, firefox-prewarm, wifi-menu captive portals
+    - pavucontrol   # settings-menu audio entry
   # AUR, installed with yay (bootstrapped from yay-bin if no helper exists).
   # Same shared/gui split as above.
   aur:

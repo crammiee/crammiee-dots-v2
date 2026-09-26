@@ -1,11 +1,11 @@
-{{- $wsl := and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+{{- $wsl := includeTemplate "is-wsl" . -}}
 {{- $pkgs := .packages.shared -}}
 {{- $aur := .packages.aur.shared -}}
 {{- if not $wsl }}{{ $pkgs = concat $pkgs .packages.gui }}{{ $aur = concat $aur .packages.aur.gui }}{{ end -}}
 #!/bin/bash
 # Installs the packages in .chezmoidata/packages.yaml. chezmoi re-runs this
 # only when its rendered contents change, i.e. when a package list changes.
-# WSL gets only the shared lists (same check as .chezmoiignore).
+# WSL gets only the shared lists (see .chezmoitemplates/is-wsl).
 set -euo pipefail
 
 if ! command -v pacman >/dev/null; then
