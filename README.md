@@ -11,12 +11,18 @@ detects WSL via `.chezmoi.kernel.osrelease` containing `microsoft`.
 | Scope | Files |
 |-------|-------|
 | Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/pdf2md` |
-| GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm}` |
+| GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,swayidle-launcher,idle-timeout-menu}` |
 
 Deliberately **not** tracked: `.config/gh` (auth tokens), plus caches and
 runtime state (`pulse`, `systemd`, `procps`, `mozilla`).
 
-## Fresh Arch install
+## Setting up a machine
+
+Pick the section for the machine, then both end in
+[**Applying the dotfiles**](#applying-the-dotfiles). The same repo serves
+both; WSL just gets the shared configs and packages.
+
+### New Arch laptop
 
 Starting point: a minimal Arch install, rebooted and logged in as root on the
 TTY. Include NetworkManager at install time, or the new system has no Wi-Fi:
@@ -38,10 +44,10 @@ passwd <user>
 echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel   # base has no editor for visudo
 chmod 440 /etc/sudoers.d/wheel
 
-# 3. Log out, log back in as <user>, then continue with "New machine" below.
+# 3. Log out, log back in as <user>, then do "Applying the dotfiles" below.
 ```
 
-After the **New machine** steps finish:
+After **Applying the dotfiles** finishes:
 
 ```sh
 # 4. Battery tuning (pipewire's user units are socket-activated, nothing to enable)
@@ -73,7 +79,44 @@ sudo reboot
 
 Wi-Fi after that: `$mod+Shift+S` → **Wi-Fi**, or `nmtui`.
 
-## New machine
+### New WSL machine
+
+From PowerShell, install the official Arch image. It opens a root shell and
+sets up the pacman keyring on first launch.
+
+```powershell
+wsl --install archlinux
+```
+
+Then inside it, as root:
+
+```sh
+# 1. Update, and get sudo for the user
+pacman -Syu --needed sudo zsh
+useradd -m -G wheel -s /bin/zsh <user>
+passwd <user>
+echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel
+chmod 440 /etc/sudoers.d/wheel
+
+# 2. Log in as <user> by default instead of root
+printf '\n[user]\ndefault=<user>\n' >> /etc/wsl.conf
+```
+
+```powershell
+# 3. Restart the distro so wsl.conf takes effect, then reopen it
+wsl --terminate archlinux
+wsl -d archlinux
+```
+
+Now do **Applying the dotfiles** below. Nothing else needed afterwards: no
+sway, services or wallpaper on WSL, and the clipboard works through WSLg.
+For the prompt's icons, set a Nerd Font in Windows Terminal (the font lives on
+the Windows side, not in WSL).
+
+### Applying the dotfiles
+
+Same on both machines. On an existing machine that already has a user, this
+is the only part you need.
 
 ```sh
 # 1. Bootstrap: just enough to clone. `chezmoi apply` installs the rest.
