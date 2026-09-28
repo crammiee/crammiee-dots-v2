@@ -10,7 +10,7 @@ detects WSL via `.chezmoi.kernel.osrelease` containing `microsoft`.
 
 | Scope | Files |
 |-------|-------|
-| Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/pdf2md` |
+| Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/s`, `.local/share/scripts/` |
 | GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,swayidle-launcher,idle-timeout-menu}` |
 
 Deliberately **not** tracked: `.config/gh` (auth tokens), plus caches and

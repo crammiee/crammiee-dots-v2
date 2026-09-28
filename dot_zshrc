@@ -41,4 +41,14 @@ done
 
 alias ls='ls --color=auto'
 alias ll='ls -lah'
+
+# s: personal scripts launcher (~/.local/bin/s). Bare `s` opens an fzf picker
+# and drops `s <name> ` on the prompt so args can be typed with completion.
+s() {
+  if (( $# )) || ! (( $+commands[fzf] )); then command s "$@"; return; fi
+  local n; n=$(command s -p) && [[ -n $n ]] && print -z "s $n "
+}
+_s() { _arguments '1:script:($(command s -n))' '*:file:_files' }
+compdef _s s
+
 export PATH="$HOME/.local/bin:$PATH"

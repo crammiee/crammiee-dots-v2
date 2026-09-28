@@ -30,7 +30,8 @@ packages:
     - wl-clipboard  # nvim clipboard (WSLg speaks Wayland too)
     - yazi
     - ouch          # yazi archive preview/extract/compress
-    - uv            # runs ~/.local/bin python scripts (inline deps)
+    - uv            # runs ~/.local/share/scripts (inline deps, via `s`)
+    - fzf           # `s` script picker
   # Machines with a display only -- skipped on WSL
   gui:
     # Desktop plumbing

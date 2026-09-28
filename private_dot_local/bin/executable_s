@@ -1,0 +1,34 @@
+#!/bin/sh
+# s: run personal scripts from ~/.local/share/scripts
+#   s <name> [args]  run a script (name is the filename minus extension)
+#   s -l             list scripts with their "# desc:" line
+#   s -n             list names only (used by zsh completion)
+#   s -p             pick one with fzf and print its name
+dir=${S_DIR:-$HOME/.local/share/scripts}
+
+list() {
+  for f in "$dir"/*; do
+    [ -x "$f" ] || continue
+    n=${f##*/}; n=${n%.*}
+    if [ "$1" = names ]; then
+      echo "$n"
+    else
+      printf '%-16s %s\n' "$n" "$(sed -n 's/^# desc: *//p' "$f" | head -n1)"
+    fi
+  done
+}
+
+case $1 in
+  ''|-l) list ;;
+  -n) list names ;;
+  -p)
+    command -v fzf >/dev/null || { echo "s: fzf not installed" >&2; exit 1; }
+    list | fzf --height=40% --reverse | cut -d' ' -f1 ;;
+  -*) sed -n '2,7s/^# \{0,1\}//p' "$0" >&2; exit 2 ;;
+  *)
+    name=$1; shift
+    for f in "$dir/$name" "$dir/$name".*; do
+      [ -x "$f" ] && exec "$f" "$@"
+    done
+    echo "s: no script '$name' in $dir" >&2; exit 127 ;;
+esac
