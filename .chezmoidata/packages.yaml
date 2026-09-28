@@ -30,7 +30,6 @@ packages:
     - wl-clipboard  # nvim clipboard (WSLg speaks Wayland too)
     - yazi
     - ouch          # yazi archive preview/extract/compress
-    - python-pymupdf  # pdf2md (pymupdf4llm itself is in aur.shared below)
   # Machines with a display only -- skipped on WSL
   gui:
     # Desktop plumbing
@@ -65,6 +64,5 @@ packages:
   # AUR, installed with yay (bootstrapped from yay-bin if no helper exists).
   # Same shared/gui split as above.
   aur:
-    shared:
-      - python-pymupdf4llm  # pdf2md
+    shared: []
     gui: []
