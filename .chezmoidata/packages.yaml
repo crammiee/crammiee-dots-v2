@@ -32,6 +32,7 @@ packages:
     - ouch          # yazi archive preview/extract/compress
     - uv            # runs ~/.local/share/scripts (inline deps, via `s`)
     - fzf           # `s` script picker
+    - htop          # process/resource monitor (config: .config/htop/htoprc)
   # Machines with a display only -- skipped on WSL
   gui:
     # Desktop plumbing

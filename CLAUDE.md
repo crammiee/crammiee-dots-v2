@@ -19,7 +19,7 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 
 ## What's managed
 
-- Shared (all machines): `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/s`, `.local/share/scripts/`
+- Shared (all machines): `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi,htop}/`, `.local/bin/s`, `.local/share/scripts/`
 - GUI only (skipped on WSL): `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`,
   `.config/mimeapps.list`,
   `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,

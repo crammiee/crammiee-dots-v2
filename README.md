@@ -10,7 +10,7 @@ detects WSL via `.chezmoi.kernel.osrelease` containing `microsoft`.
 
 | Scope | Files |
 |-------|-------|
-| Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi}/`, `.local/bin/s`, `.local/share/scripts/` |
+| Shared | `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi,htop}/`, `.local/bin/s`, `.local/share/scripts/` |
 | GUI only | `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`, `.config/mimeapps.list`, `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,swayidle-launcher,idle-timeout-menu}` |
 
 Deliberately **not** tracked: `.config/gh` (auth tokens), plus caches and
@@ -206,7 +206,7 @@ rather than one monolithic settings app:
 | Network | `nm-connection-editor` |
 | Wi-Fi | `~/.local/bin/wifi-menu` |
 
-**These GUIs write to chezmoi-managed files.** `nwg-look` writes
+**These tools write to chezmoi-managed files.** `htop` rewrites `~/.config/htop/htoprc` when you change settings (F2); `nwg-look` writes
 `~/.config/gtk-3.0/settings.ini`; `nwg-displays` writes a sway output
 include. Treat them as *generators*: after changing something in a GUI,
 
