@@ -19,7 +19,7 @@ Empty output from `chezmoi status` means `$HOME` and the repo agree.
 
 ## What's managed
 
-- Shared (all machines): `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi,htop}/`, `.local/bin/s`, `.local/share/scripts/`
+- Shared (all machines): `.zshrc`, `.tmux.conf`, `.config/{nvim,yazi,htop}/`, `.local/bin/{s,claude-tmux-waiting}`, `.local/share/scripts/`
 - GUI only (skipped on WSL): `.zprofile`, `.config/{sway,foot,fuzzel,i3status-rust,gtk-3.0,gtk-4.0,nwg-look}`,
   `.config/mimeapps.list`,
   `.local/bin/{wifi-menu,firefox-toggle,firefox-prewarm,settings-menu,claude-inhibit-watch,
@@ -35,6 +35,16 @@ which is skipped on WSL), plus AUR ones under `aur.{shared,gui}`.
 `run_onchange_before_install-packages.sh.tmpl` installs them on `chezmoi apply`
 and re-runs whenever a list changes. When a config starts depending on a new
 tool, add the package there, not to the README.
+
+## Claude Code hooks
+
+`~/.claude/settings.json` is **not** managed: Claude Code rewrites it itself
+(`/config`, effort level, per-machine `autoMode` rules). Instead,
+`run_onchange_after_claude-hooks.sh.tmpl` merges just the
+`claude-tmux-waiting` hook entries into it with `jq`, replacing any older
+copies of them and leaving everything else alone. It re-runs when its hook
+list changes. Those hooks flag a tmux window as waiting for input, and
+`.tmux.conf` highlights it (`prefix + a` jumps to it).
 
 ## Not managed on purpose
 

@@ -1,0 +1,31 @@
+#!/bin/bash
+# Merges the claude-tmux-waiting hooks into ~/.claude/settings.json.
+# That file isn't chezmoi-managed because Claude Code rewrites it itself, so only
+# our hook entries are replaced and everything else is kept. chezmoi re-runs this
+# only when its contents change, i.e. when the hook list below changes.
+set -euo pipefail
+
+if ! command -v jq >/dev/null; then
+  echo "claude-hooks: jq not found, skipping" >&2
+  exit 0
+fi
+
+settings="$HOME/.claude/settings.json"
+mkdir -p "$(dirname "$settings")"
+[ -s "$settings" ] || echo '{}' > "$settings"
+
+hook() { printf '[{"hooks":[{"type":"command","command":"~/.local/bin/claude-tmux-waiting %s"}]}]' "$1"; }
+hooks=$(jq -n \
+  --argjson on "$(hook on)" --argjson off "$(hook off)" \
+  '{Stop: $on, Notification: $on, UserPromptSubmit: $off, PostToolUse: $off, SessionEnd: $off}')
+
+tmp=$(mktemp)
+jq --argjson add "$hooks" '
+  .hooks //= {}
+  | reduce ($add | to_entries[]) as $e (.;
+      .hooks[$e.key] = (
+        (.hooks[$e.key] // [])
+        | map(select(any(.hooks[]?; .command | test("tmux-waiting")) | not))
+      ) + $e.value)
+' "$settings" > "$tmp"
+mv "$tmp" "$settings"

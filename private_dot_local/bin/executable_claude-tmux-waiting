@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Flag this Claude session's tmux window as waiting for input (on) or busy (off).
+# Called by Claude Code hooks (merged into ~/.claude/settings.json by
+# run_onchange_after_claude-hooks.sh.tmpl); read by window-status-format in ~/.tmux.conf.
+[ -n "$TMUX_PANE" ] || exit 0
+case "$1" in
+  on)  tmux set-option -w -t "$TMUX_PANE" @claude_waiting 1 ;;
+  off) tmux set-option -w -u -t "$TMUX_PANE" @claude_waiting ;;
+esac 2>/dev/null
+exit 0
