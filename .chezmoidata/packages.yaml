@@ -34,6 +34,8 @@ packages:
     - fzf           # `s` script picker
     - jq            # merges Claude hooks into ~/.claude/settings.json
     - htop          # process/resource monitor (config: .config/htop/htoprc)
+    - yt-dlp        # ytdlp alias in .zshrc
+    - ffmpeg        #   merges the separate video and audio streams
   # Machines with a display only -- skipped on WSL
   gui:
     # Desktop plumbing

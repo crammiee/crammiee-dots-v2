@@ -52,3 +52,4 @@ _s() { _arguments '1:script:($(command s -n))' '*:file:_files' }
 compdef _s s
 
 export PATH="$HOME/.local/bin:$PATH"
+alias ytdlp='yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b" --merge-output-format mp4 -o "%(title)s.%(ext)s"'
